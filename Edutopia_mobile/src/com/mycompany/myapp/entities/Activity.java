@@ -5,9 +5,10 @@
  */
 package com.mycompany.myapp.entities;
 
-import com.mycompany.myapp.entities.Work_done;
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.List;
+
 
 /**
  *
