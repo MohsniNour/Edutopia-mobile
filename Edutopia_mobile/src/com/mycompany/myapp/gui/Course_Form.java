@@ -42,7 +42,29 @@ public class Course_Form extends Form {
         }
               this.revalidate();
             });
-        });    
+        });
+
+        this.getToolbar().addSearchCommand(e -> {
+            String text = (String) e.getSource();
+            if (text == null || text.length() == 0) {
+                // clear search
+                for (Component cmp : this.getContentPane()) {
+                    cmp.setHidden(false);
+                    cmp.setVisible(true);
+                }
+                this.getContentPane().animateLayout(150);
+            } else {
+                text = text.toLowerCase();
+                for (Component cmp : this.getContentPane()) {
+                    MultiButton mb = (MultiButton) cmp;
+                    String line1 = mb.getTextLine1();
+                    String line2 = mb.getTextLine2();    
+                    boolean show = line1 != null && line1.toLowerCase().indexOf(text) > -1
+                    || line2 != null && line2.toLowerCase().indexOf(text) > -1;
+                    mb.setHidden(!show);
+                    mb.setVisible(show);
+                }
+        this.getContentPane().animateLayout(150);}}, 4);     
         this.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
         new MyApplication().start();
         });
