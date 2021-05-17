@@ -14,14 +14,14 @@ import com.codename1.ui.layouts.BoxLayout;
  *
  * @author bhk
  */
-public class HomeForm extends Form {
+public class Home_Form extends Form {
 
     Form current;
     /*Garder traçe de la Form en cours pour la passer en paramètres 
     aux interfaces suivantes pour pouvoir y revenir plus tard en utilisant
     la méthode showBack*/
     
-    public HomeForm() {
+    public Home_Form() {
         current = this; //Récupération de l'interface(Form) en cours
         setTitle("Home");
         setLayout(BoxLayout.y());

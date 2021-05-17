@@ -14,6 +14,7 @@ import java.io.IOException;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.io.NetworkEvent;
 import com.codename1.ui.Button;
+import com.mycompany.myapp.gui.Activity_List_Form;
 import com.mycompany.myapp.gui.Course_Form;
 
 
@@ -61,7 +62,12 @@ public class MyApplication {
            
            // 1 adhika id_Subjeect ttbdl hasb subject
        
-       new Course_Form(hi,1).show();
+       new Course_Form(hi,4).show();
+       });
+        Button btn_activity = new Button("Activity");
+       hi.add(btn_activity);
+       btn_activity.addActionListener(aah->{
+       new Activity_List_Form(hi,2).show();
        });
         hi.show();
     }

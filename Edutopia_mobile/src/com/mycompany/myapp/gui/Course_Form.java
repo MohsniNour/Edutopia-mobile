@@ -19,6 +19,7 @@ import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
 import com.mycompany.myapp.MyApplication;
 import com.mycompany.myapp.entities.Course;
+import com.mycompany.myapp.services.Activity_Service;
 import com.mycompany.myapp.services.Course_Service;
 
 /**
@@ -38,7 +39,7 @@ public class Course_Form extends Form {
             this.removeAll();
             for (Course c : new Course_Service().findAll(id_S)) {
 
-            this.add(addItem_Course(c));
+            this.add(addItem_Course(previous,c));
         }
               this.revalidate();
             });
@@ -48,26 +49,31 @@ public class Course_Form extends Form {
         });
     }
     
-     public MultiButton  addItem_Course(Course c) {
+     public MultiButton  addItem_Course(Form previous,Course c) {
 
         MultiButton m = new MultiButton();
         String    url = "http://127.0.0.1:8000/book.jpg";
         m.setTextLine1(c.getName());
         m.setTextLine2(c.getDescription());
         m.setTextLine3(c.getNom_Subject());
-        m.setEmblem(theme.getImage("delete.png"));
+        //m.setEmblem(theme.getImage("delete.png"));
+        m.setEmblem(theme.getImage("activity.png"));
         Image imge;
         EncodedImage enc;
         enc = EncodedImage.createFromImage(theme.getImage("round.png"), false);
         imge = URLImage.createToStorage(enc, url, url);
         m.setIcon(imge);
         
-        m.addActionListener(aaaa->{
-        Course_Service sv = new Course_Service();
-        sv.Delete_ccourse(c.getId());
-        Dialog.show("Delete", "Delete", "OK", null);
-        new MyApplication().start();
-        });
+        
+//        m.addActionListener(aaaa->{
+//        Course_Service sv = new Course_Service();
+//        sv.Delete_ccourse(c.getId());
+//        Dialog.show("Delete", "Delete", "OK", null);
+//        new MyApplication().start();
+//        });
+        m.addActionListener(aa->{
+         new Activity_List_Form(previous,c.getId()).show();
+       });
         
         return m;
          }
