@@ -7,6 +7,7 @@ package com.mycompany.myapp.gui;
 
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.MultiButton;
+import com.codename1.ui.Button;
 import com.codename1.ui.Component;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Display;
@@ -66,7 +67,29 @@ public class Course_Form extends Form {
                 }
         this.getContentPane().animateLayout(150);}}, 4);     
         this.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
-        new MyApplication().start();
+
+ Form hi = new Form("Projet", BoxLayout.y());
+ hi.getToolbar().addCommandToOverflowMenu("back", null, evv -> {
+           new ListeMatieresForm(theme).show();
+        });
+       Button btn_course = new Button("Course");
+       hi.add(btn_course);
+       btn_course.addActionListener(aaqq->{
+           
+           // 1 adhika id_Subjeect ttbdl hasb subject
+       
+       new Course_Form(hi,id_S).show();
+       });
+         Button btn_exam = new Button("Exam");
+       hi.add(btn_exam);
+       btn_exam.addActionListener(aaqq->{
+           
+           // 1 adhika id_Subjeect ttbdl hasb subject
+       
+       new Exam_Form(hi,id_S).show();
+       });
+        hi.show();
+
         });
     }
     
@@ -80,7 +103,7 @@ public class Course_Form extends Form {
         m.setEmblem(theme.getImage("delete.png"));
         Image imge;
         EncodedImage enc;
-        enc = EncodedImage.createFromImage(theme.getImage("round.png"), false);
+        enc = EncodedImage.createFromImage(theme.getImage("hd.png"), false);
         imge = URLImage.createToStorage(enc, url, url);
         m.setIcon(imge);
         
@@ -88,7 +111,7 @@ public class Course_Form extends Form {
         Course_Service sv = new Course_Service();
         sv.Delete_ccourse(c.getId());
         Dialog.show("Delete", "Delete", "OK", null);
-        new MyApplication().start();
+        new ListeMatieresForm(theme).show();
         });
         
         return m;

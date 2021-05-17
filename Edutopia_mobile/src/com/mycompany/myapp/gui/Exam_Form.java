@@ -87,7 +87,30 @@ public class Exam_Form  extends Form {
         }, 4);
 
            this.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
-           new MyApplication().start();
+
+           
+       Form hi = new Form("Projet", BoxLayout.y());
+       hi.getToolbar().addCommandToOverflowMenu("back", null, evv -> {
+           new ListeMatieresForm(theme).show();
+        });
+       Button btn_course = new Button("Course");
+       hi.add(btn_course);
+       btn_course.addActionListener(aaqq->{
+           
+           // 1 adhika id_Subjeect ttbdl hasb subject
+       
+       new Course_Form(hi,id_S).show();
+       });
+         Button btn_exam = new Button("Exam");
+       hi.add(btn_exam);
+       btn_exam.addActionListener(aaqq->{
+           
+           // 1 adhika id_Subjeect ttbdl hasb subject
+       
+       new Exam_Form(hi,id_S).show();
+       });
+        hi.show();
+
         });
     }
     
@@ -100,10 +123,9 @@ public class Exam_Form  extends Form {
          
         m.setTextLine3(c.getFinishDate());
           
-        m.setEmblem(theme.getImage("round.png"));
         Image imge;
         EncodedImage enc;
-        enc = EncodedImage.createFromImage(theme.getImage("round.png"), false);
+        enc = EncodedImage.createFromImage(theme.getImage("hd.png"), false);
         imge = URLImage.createToStorage(enc, url, url);
         m.setIcon(imge);
        
@@ -129,14 +151,14 @@ public class Exam_Form  extends Form {
 
         }
             f2.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
-           new MyApplication().start();
+           this.show();
         });
             f2.getToolbar().addCommandToOverflowMenu("Supprimer", null, ev -> {
             Exam_Service ex = new Exam_Service();
             ex.delete_Examn(c.getIdExam());
                            
             Dialog.show("Delete", "Delete", "OK", null);
-            new MyApplication().start();
+            this.show();
         });
         f2.show();    
         }
@@ -155,7 +177,7 @@ public class Exam_Form  extends Form {
         ex.delete_question(q.getId());
                            
         Dialog.show("Delete", "Delete", "OK", null);
-        new MyApplication().start(); 
+        this.show();
          });
         cn2.add("Question : "+q.getQuestion()).add("proposition 1 :"+q.getProposition1()).add("proposition 2 : "+q.getProposition2()).add("Proposition 3 : "+q.getProposition3()).add("Proposition 4 : "+q.getProposition4()).add("Bonne reponse : "+q.getBonnereponse()).add(btn_delete).add("----");
         cn1.add(BorderLayout.WEST, cn2);
