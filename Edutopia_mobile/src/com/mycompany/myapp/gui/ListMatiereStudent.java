@@ -246,7 +246,15 @@ public class ListMatiereStudent extends Form {
                 new ListeMatieresForm(res).show();   
         });
         lActions.addPointerPressedListener(l -> {          
-            new ActionsMatiereForm(res,c).show();   
+
+        Form hi = new Form("Projet", BoxLayout.y());
+        hi.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
+           this.show();
+        });
+       
+       new Course_Form_Student(hi,c.getId()).show();
+
+
         });
         cnt.add(BorderLayout.CENTER, BoxLayout.encloseY(BoxLayout.encloseX(idSubjectTxt),BoxLayout.encloseX(idClasseTxt),BoxLayout.encloseXRight(lActions)));
         add(cnt);

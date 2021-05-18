@@ -16,6 +16,7 @@ import com.codename1.io.NetworkEvent;
 import com.codename1.ui.Button;
 import com.mycompany.myapp.gui.Course_Form;
 import com.mycompany.myapp.gui.Exam_Form;
+import com.mycompany.myapp.gui.ListMatiereStudent;
 import com.mycompany.myapp.gui.ListeMatieresForm;
 
 /**
@@ -55,7 +56,7 @@ public class MyApplication {
             current.show();
             return;
         }
-new ListeMatieresForm(theme).show();
+new ListMatiereStudent(theme).show();
     }
 
     public void stop() {
