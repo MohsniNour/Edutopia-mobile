@@ -248,10 +248,8 @@ public class ListMatiereStudent extends Form {
         lActions.addPointerPressedListener(l -> {          
 
         Form hi = new Form("Projet", BoxLayout.y());
-        hi.getToolbar().addCommandToOverflowMenu("back", null, ev -> {
-           this.show();
-        });
-       
+
+                  
        new Course_Form_Student(hi,c.getId()).show();
 
 
