@@ -40,6 +40,12 @@ public class Complaint {
         this.createdBy = createdBy;
     }
 
+    public Complaint(String object, String description, String status) {
+        this.object = object;
+        this.description = description;
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }
