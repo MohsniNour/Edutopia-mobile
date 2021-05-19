@@ -61,7 +61,7 @@ public class AddComplaintForm extends BaseForm {
                 } else {
                     InfiniteProgress ip = new InfiniteProgress();
                     final Dialog iDialog = ip.showInfiniteBlocking();
-                     Complaint co = new Complaint(
+                      Complaint co = new Complaint(
                             String.valueOf(object.getText()),                         
                             String.valueOf(description.getText()),
                             String.valueOf(status.getText())
@@ -72,7 +72,7 @@ public class AddComplaintForm extends BaseForm {
                     // calling adding fct in the services class
                     ServiceComplaint.getInstance().addComplaint(co);
                     iDialog.dispose(); //Remove LOADING after adding
-//                    new ListeCoStudying(res).show();
+     
                     refreshTheme();
                 }
             } catch (Exception ex) {
