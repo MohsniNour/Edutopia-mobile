@@ -10,6 +10,7 @@ import com.mycompany.services.CoStudyingServices;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
+import com.codename1.components.ToastBar;
 import com.codename1.ui.Button;
 import com.codename1.ui.ButtonGroup;
 import com.codename1.ui.ComboBox;
@@ -44,12 +45,11 @@ public class AddCoStudying extends BaseForm {
 
     public AddCoStudying(Resources res) {
 
-        super("Ajout cos", BoxLayout.y());
+        super("Ajouter contenu", BoxLayout.y());
         Toolbar tb = new Toolbar(true);
         current = this;
         setToolbar(tb);
         getTitleArea().setUIID("Container");
-        setTitle("Ajout cos");
         getContentPane().setScrollVisible(false);
 
         tb.addSearchCommand(s -> {
@@ -101,12 +101,16 @@ public class AddCoStudying extends BaseForm {
         Component.setSameSize(radioContainer, s1, s2);
         add(LayeredLayout.encloseIn(swipe, radioContainer));
         ButtonGroup barGroup = new ButtonGroup();
-        RadioButton mesListes = RadioButton.createToggle("My content", barGroup);
-        mesListes.setUIID("SelectBar");
-        RadioButton liste = RadioButton.createToggle("Autres", barGroup);
+
+        RadioButton liste = RadioButton.createToggle("Home", barGroup);
         liste.setUIID("SelectBar");
+
+        RadioButton mesListes = RadioButton.createToggle("Contenu", barGroup);
+        mesListes.setUIID("SelectBar");
+
         RadioButton partage = RadioButton.createToggle("Ajouter", barGroup);
         partage.setUIID("SelectBar");
+
         Label arrow = new Label(res.getImage("news-tab-down-arrow.png"), "Container");
 
         mesListes.addActionListener((e) -> {
@@ -115,8 +119,16 @@ public class AddCoStudying extends BaseForm {
             new ListeCoStudying(res).show();
             refreshTheme();
         });
+
+        partage.addActionListener((e) -> {
+            InfiniteProgress ip = new InfiniteProgress();
+            final Dialog ipDlg = ip.showInifiniteBlocking();
+            new AddCoStudying(res).show();
+            refreshTheme();
+        });
+
         add(LayeredLayout.encloseIn(
-                GridLayout.encloseIn(3, mesListes, liste, partage),
+                GridLayout.encloseIn(3, liste, mesListes, partage),
                 FlowLayout.encloseBottom(arrow)
         ));
 
@@ -140,16 +152,18 @@ public class AddCoStudying extends BaseForm {
         TextField description = new TextField("", "Entrer une description");
         description.setUIID("TextFieldBalck");
         addStringValue("Description", description);
-        
+
 //        TextField type = new TextField("", "Entrer un type"); 
 //        type.setUIID("TextFieldBalck");
 //        addStringValue("Type", type);
-
         ComboBox c = new ComboBox();
         List<String> listType = CoStudyingServices.getInstance().getAllType();
-        for (String t : listType) { 
+
+        for (String t : listType) {
             c.addItem(t);
         }
+        listType.removeAll(listType);
+        //listType.clear();
         description.setUIID("TextFieldBalck");
         addStringValue("Type", c);
 
@@ -166,11 +180,12 @@ public class AddCoStudying extends BaseForm {
         addStringValue("Author", idStudent);
 
         Button btnAjouter = new Button("Add");
+
         addStringValue("", btnAjouter);
         btnAjouter.addActionListener((e) -> {
 
             try {
-                if (description.getText() == "" || (((String) c.getSelectedItem()).length() == 0)|| niveau.getText() == "" || rating.getText() == "" || idStudent.getText() == "") {
+                if (description.getText() == "" || (((String) c.getSelectedItem()).length() == 0) || niveau.getText() == "" || rating.getText() == "" || idStudent.getText() == "") {
                     Dialog.show("veuillez verifier vos donnees", "", "annuler", "ok");
                 } else {
                     InfiniteProgress ip = new InfiniteProgress();
@@ -187,6 +202,16 @@ public class AddCoStudying extends BaseForm {
                     // calling adding fct in the services class
                     CoStudyingServices.getInstance().addCos(promo);
                     iDialog.dispose(); //Remove LOADING after adding
+
+                    //notification API
+                    ToastBar.getInstance().setPosition(BOTTOM);
+                    ToastBar.Status status = ToastBar.getInstance().createStatus();
+                    status.setShowProgressIndicator(true);
+                    status.setIcon(res.getImage("nour.png").scaledSmallerRatio(Display.getInstance().getDisplayWidth() / 10, Display.getInstance().getDisplayWidth() / 15));
+                    status.setMessage("Contenu ajouté avec sucées");
+                    status.setExpires(30000);  // only show the status for 3 seconds, then have it automatically clear
+                    status.show();
+                    //  iDialog.dispose(); //NAHIW LOADING BAED AJOUT
                     new ListeCoStudying(res).show();
                     refreshTheme();
                 }

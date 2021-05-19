@@ -89,22 +89,22 @@ public class CoStudyingServices {
                     Co_Studying promo = new Co_Studying();
                     float id = Float.parseFloat(obj.get("id").toString());
                     String description = obj.get("description").toString();
-                    String file = obj.get("file").toString();
+                    //    String file = obj.get("file").toString();
                     String type = obj.get("type").toString();
                     String strType = type.substring(6, type.length() - 1);
                     String niveau = obj.get("niveau").toString();
                     float rating = Float.parseFloat(obj.get("rating").toString());
                     String idStudent = obj.get("idStudent").toString();
                     String strIdStudent = idStudent.substring(6, idStudent.length() - 1);
-
+                    
                     promo.setId((int) id);
                     promo.setDescription(description);
                     promo.setRating((int) rating);
-                    promo.setFile(file);
+                    //    promo.setFile(file);
                     promo.setNiveau(niveau);
                     promo.setType(strType);
                     promo.setId_student(strIdStudent);
-
+                    
                     //inset data in array list result
                     result.add(promo);
                 }

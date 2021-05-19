@@ -8,6 +8,7 @@ package com.mycompany.gui;
 import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
+import com.codename1.components.ToastBar;
 import com.codename1.ui.Button;
 import com.codename1.ui.ButtonGroup;
 import com.codename1.ui.Component;
@@ -57,7 +58,6 @@ public class ListeCoStudying extends BaseForm {
         setToolbar(tb);
         getTitleArea().setUIID("Container");
 
-        setTitle("Content List");
         getContentPane().setScrollVisible(false);
 
         tb.addSearchCommand(s -> {
@@ -111,11 +111,11 @@ public class ListeCoStudying extends BaseForm {
 
         ButtonGroup barGroup = new ButtonGroup();
 
-        RadioButton mesListes = RadioButton.createToggle("My content", barGroup);
-        mesListes.setUIID("SelectBar");
-
-        RadioButton liste = RadioButton.createToggle("Autres", barGroup);
+        RadioButton liste = RadioButton.createToggle("Home", barGroup);
         liste.setUIID("SelectBar");
+
+        RadioButton mesListes = RadioButton.createToggle("Contenu", barGroup);
+        mesListes.setUIID("SelectBar");
 
         RadioButton partage = RadioButton.createToggle("Ajouter", barGroup);
         partage.setUIID("SelectBar");
@@ -125,14 +125,19 @@ public class ListeCoStudying extends BaseForm {
         mesListes.addActionListener((e) -> {
             InfiniteProgress ip = new InfiniteProgress();
             final Dialog ipDlg = ip.showInifiniteBlocking();
+            new ListeCoStudying(res).show();
+            refreshTheme();
+        });
 
-            //  ListReclamationForm a = new ListReclamationForm(res);
-            //  a.show();
+        partage.addActionListener((e) -> {
+            InfiniteProgress ip = new InfiniteProgress();
+            final Dialog ipDlg = ip.showInifiniteBlocking();
+            new AddCoStudying(res).show();
             refreshTheme();
         });
 
         add(LayeredLayout.encloseIn(
-                GridLayout.encloseIn(3, mesListes, liste, partage),
+                GridLayout.encloseIn(3, liste, mesListes, partage),
                 FlowLayout.encloseBottom(arrow)
         ));
 
@@ -153,14 +158,14 @@ public class ListeCoStudying extends BaseForm {
         ArrayList<Co_Studying> list = CoStudyingServices.getInstance().displayCos();
 
         for (Co_Studying promo : list) {
-            String urlImage = "kkj.png";
+            String urlImage = "book.png";
             Image placeHolder = Image.createImage(12, 90);
             EncodedImage enc = EncodedImage.createFromImage(placeHolder, false);
             URLImage urlimg = URLImage.createToStorage(enc, urlImage, urlImage, URLImage.RESIZE_SCALE);
 
-            addButton(placeHolder, promo.getNiveau(), promo, res);
-            addButton(placeHolder, promo.getType(), promo, res);
-            addButton(placeHolder, promo.getId_student(), promo, res);
+//            addButton(placeHolder, promo.getNiveau(), promo, res);
+//            addButton(placeHolder, promo.getType(), promo, res);
+//            addButton(placeHolder, promo.getId_student(), promo, res);
             addButton(placeHolder, promo.getDescription(), promo, res);
 
             ScaleImageLabel image = new ScaleImageLabel(urlimg);
@@ -208,7 +213,7 @@ public class ListeCoStudying extends BaseForm {
         }
         //appel fct aaff
         // ServicePromotion servicePromotion = new ServicePromotion();
-        //    ArrayList <Promotion>list =ServicePromotion.getInstance().afficherPromotion();
+        // ArrayList <Promotion>list =ServicePromotion.getInstance().afficherPromotion();
 
         );
     }
@@ -220,8 +225,8 @@ public class ListeCoStudying extends BaseForm {
     }
 
     private void addButton(Image img, String nameT, Co_Studying co, Resources res) {
-        int height = Display.getInstance().convertToPixels(11.5f);
-        int width = Display.getInstance().convertToPixels(14f);
+        int height = Display.getInstance().convertToPixels(5f);
+        int width = Display.getInstance().convertToPixels(1f);
         Button image = new Button(img.fill(width, height));
         image.setUIID("Label");
 
@@ -232,13 +237,22 @@ public class ListeCoStudying extends BaseForm {
         ta.setUIID("NewsTopLine");
         ta.setEditable(false);
 
-        Label description = new Label("Description " + co.getDescription(), "NewsTopLine2");
-        Label type = new Label("Type " + co.getType(), "NewsTopLine2");
-        Label niveau = new Label("Niveau" + co.getNiveau(), "NewsTopLine2");
-        Label rating = new Label("Rating" + co.getRating()+ " )", "NewsTopLine2");
+        Label description = new Label("Description :" + co.getDescription(), "NewsTopLine2");
+
+        TextArea lbl = new TextArea("Description : " + co.getDescription());
+        lbl.setEditable(false);
+        lbl.setFocusable(false);
+        lbl.setUIID("Label");
+
+        Label type = new Label("Type : " + co.getType() + " | ", "NewsTopLine2");
+        Label delbl = new Label("Supprimer : ", "NewsTopLine2");
+        Label niveau = new Label("Niveau : " + co.getNiveau(), "NewsTopLine2");
+        Label rating = new Label("Rating : " + co.getRating(), "NewsTopLine2");
+        Label user = new Label("Uploaded by : " + co.getId_student(), "NewsTopLine2");
+        Label line = new Label("________________________________________________________", "NewsTopLine2");
 
         //Supprimer btn
-        Label lsupprimer = new Label(" ");
+        Label lsupprimer = new Label("");
 
         lsupprimer.setUIID("NewsTopLine");
         Style supprimerStyle = new Style(lsupprimer.getUnselectedStyle());
@@ -251,13 +265,22 @@ public class ListeCoStudying extends BaseForm {
         //Onclick delete btn
         lsupprimer.addPointerPressedListener(l -> {
             Dialog dig = new Dialog("Suppression");
-            if (dig.show("Suppression", "Voulez vous supprimer cette promotion ?", "annuler", "Oui")) {
+            if (dig.show("Suppression", "Voulez vous supprimer ce contenu ?", "Annuler", "Oui")) {
                 dig.dispose();
             } else {
                 dig.dispose();
                 //appel fct supp service
                 if (CoStudyingServices.getInstance().deleteCos(co.getId())) {
+                    ToastBar.getInstance().setPosition(BOTTOM);
+                    ToastBar.Status status = ToastBar.getInstance().createStatus();
+                    status.setShowProgressIndicator(true);
+                    status.setIcon(res.getImage("nour.png").scaledSmallerRatio(Display.getInstance().getDisplayWidth() / 10, Display.getInstance().getDisplayWidth() / 15));
+                    status.setMessage("Contenu supprimé avec sucées");
+                    status.setExpires(30000);  // only show the status for 3 seconds, then have it automatically clear
+                    status.show();
+                    //  iDialog.dispose(); //NAHIW LOADING BAED AJOUT
                     new ListeCoStudying(res).show();
+                    refreshTheme();
                 }
             }
         });
@@ -270,19 +293,19 @@ public class ListeCoStudying extends BaseForm {
         FontImage modifierImage = FontImage.createMaterial(FontImage.MATERIAL_MODE_EDIT, modifierStyle);
         lmodifier.setIcon(modifierImage);
         lmodifier.setTextPosition(LEFT);
-
         //Onclick update btn
         lmodifier.addPointerPressedListener(l -> {
             new UpdateCoStudying(res, co).show();
         });
+
         cnt.add(BorderLayout.CENTER, BoxLayout.encloseY(
-                BoxLayout.encloseX(description),
-                // BoxLayout.encloseX(datedText),
-                BoxLayout.encloseX(type),
-                BoxLayout.encloseX(niveau),
-                BoxLayout.encloseX(rating, lmodifier, lsupprimer)));
+                BoxLayout.encloseX(type, niveau),
+                BoxLayout.encloseX(lbl),
+                BoxLayout.encloseX(rating),
+                BoxLayout.encloseX(user),
+                BoxLayout.encloseX(delbl, lsupprimer),
+                BoxLayout.encloseX(line)));
         add(cnt);
     }
 
 }
-
