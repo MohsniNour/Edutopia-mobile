@@ -22,6 +22,7 @@ package com.mycompany.gui;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.ui.CheckBox;
 import com.codename1.ui.Component;
+import static com.codename1.ui.Component.BOTTOM;
 import com.codename1.ui.Display;
 import com.codename1.ui.Image;
 import com.codename1.ui.Label;
@@ -63,8 +64,8 @@ public class ProfileForm extends BaseForm {
         sl.setUIID("BottomPad");
         sl.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
 
-        Label facebook = new Label("786 followers", res.getImage("facebook-logo.png"), "BottomPad");
-        Label twitter = new Label("486 followers", res.getImage("twitter-logo.png"), "BottomPad");
+        Label facebook = new Label("", res.getImage(""), "BottomPad");
+        Label twitter = new Label("", res.getImage(""), "BottomPad");
         facebook.setTextPosition(BOTTOM);
         twitter.setTextPosition(BOTTOM);
         
@@ -74,21 +75,21 @@ public class ProfileForm extends BaseForm {
                     GridLayout.encloseIn(3, 
                             facebook,
                             FlowLayout.encloseCenter(
-                                new Label(res.getImage("profile-pic.jpg"), "PictureWhiteBackgrond")),
+                                new Label(res.getImage("pdp.PNG"), "PictureWhiteBackgrond")),
                             twitter
                     )
                 )
         ));
 
-        TextField username = new TextField("sandeep");
+        TextField username = new TextField("Sabrine");
         username.setUIID("TextFieldBlack");
         addStringValue("Username", username);
 
-        TextField email = new TextField("sandeep@gmail.com", "E-Mail", 20, TextField.EMAILADDR);
+        TextField email = new TextField("Sabrine.mokhtar@esprit.tn", "E-Mail", 20, TextField.EMAILADDR);
         email.setUIID("TextFieldBlack");
         addStringValue("E-Mail", email);
         
-        TextField password = new TextField("sandeep", "Password", 20, TextField.PASSWORD);
+        TextField password = new TextField("1234", "Password", 20, TextField.PASSWORD);
         password.setUIID("TextFieldBlack");
         addStringValue("Password", password);
 
@@ -99,8 +100,8 @@ public class ProfileForm extends BaseForm {
         cb2.setUIID("Label");
         cb2.setPressedIcon(res.getImage("on-off-on.png"));
         
-        addStringValue("Facebook", FlowLayout.encloseRightMiddle(cb1));
-        addStringValue("Twitter", FlowLayout.encloseRightMiddle(cb2));
+        addStringValue("En ligne", FlowLayout.encloseRightMiddle(cb1));
+        addStringValue("Hors ligne", FlowLayout.encloseRightMiddle(cb2));
     }
     
     private void addStringValue(String s, Component v) {
