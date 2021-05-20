@@ -27,6 +27,7 @@ import com.codename1.ui.Label;
 import com.codename1.ui.RadioButton;
 import com.codename1.ui.Tabs;
 import com.codename1.ui.TextArea;
+import com.codename1.ui.TextField;
 import com.codename1.ui.Toolbar;
 import com.codename1.ui.URLImage;
 import com.codename1.ui.layouts.BorderLayout;
@@ -34,6 +35,7 @@ import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.layouts.LayeredLayout;
+import com.codename1.ui.plaf.Border;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.mycompany.entities.Co_Studying;
@@ -113,12 +115,18 @@ public class ListeCoStudying extends BaseForm {
 
         RadioButton liste = RadioButton.createToggle("Home", barGroup);
         liste.setUIID("SelectBar");
+        liste.getAllStyles().setBorder(Border.createEmpty());
+        liste.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         RadioButton mesListes = RadioButton.createToggle("Contenu", barGroup);
         mesListes.setUIID("SelectBar");
+        mesListes.getAllStyles().setBorder(Border.createEmpty());
+        mesListes.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         RadioButton partage = RadioButton.createToggle("Ajouter", barGroup);
         partage.setUIID("SelectBar");
+        partage.getAllStyles().setBorder(Border.createEmpty());
+        partage.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         Label arrow = new Label(res.getImage("news-tab-down-arrow.png"), "Container");
 
@@ -155,6 +163,15 @@ public class ListeCoStudying extends BaseForm {
             updateArrowPosition(barGroup.getRadioButton(barGroup.getSelectedIndex()), arrow);
         });
 
+        TextField search = new TextField("", "Entrer mot-clé");
+        search.setUIID("TextFieldBalck");
+        addStringValue("Rechercher", search);
+        Button btnAjouter = new Button("Rechercher");
+        addStringValue("", btnAjouter);
+        btnAjouter.addActionListener((e) -> {
+            System.out.println("Search");
+        });
+
         ArrayList<Co_Studying> list = CoStudyingServices.getInstance().displayCos();
 
         for (Co_Studying promo : list) {
@@ -173,6 +190,12 @@ public class ListeCoStudying extends BaseForm {
             image.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
 
         }
+
+    }
+
+    private void addStringValue(String s, Component v) {
+        add(BorderLayout.west(new Label(s, "PaddedLabel")).add(BorderLayout.CENTER, v));
+        add(createLineSeparator(0xeeeeee));
     }
 
     private void addTab(Tabs swipe, Label spacer, Image image, String string, String text, Resources res) {

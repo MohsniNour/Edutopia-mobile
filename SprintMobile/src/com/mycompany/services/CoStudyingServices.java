@@ -64,15 +64,56 @@ public class CoStudyingServices {
                     break;
             }
         }
-
-        String url = Statics.BASE_URL + "/co/studying/addCos?description=" + co.getDescription() + "&type=" + type + "&niveau=" + co.getNiveau() + "&idStudent=" + co.getId_student() + "&rating=" + co.getRating() + "";
+        String url = Statics.BASE_URL + "/co/studying/addCos?description=" + co.getDescription() + "&file=" + co.getFile() + "&type=" + type + " &niveau=" + co.getNiveau() + "&idStudent=" + co.getId_student() + "&rating=" + co.getRating() + "";
         req.setUrl(url);
         req.addResponseListener((e) -> {
-
             String str = new String(req.getResponseData());///reponse json
             System.out.println("data=" + str);
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
+    }
+    
+    public ArrayList<Co_Studying> searchCos(){
+         ArrayList<Co_Studying> result = new ArrayList<>();
+        String url = Statics.BASE_URL + "/co/studying/searchCos";
+        req.setUrl(url);
+        req.addResponseListener((NetworkEvent evt) -> {
+            JSONParser jsonp;
+            jsonp = new JSONParser();
+            try {
+                Map<String, Object> mapCoStudying = jsonp.parseJSON(new CharArrayReader(new String(req.getResponseData()).toCharArray()));
+                List<Map<String, Object>> listOfMaps = (List<Map<String, Object>>) mapCoStudying.get("root");
+                for (Map<String, Object> obj : listOfMaps) {
+                    Co_Studying promo = new Co_Studying();
+                    float id = Float.parseFloat(obj.get("id").toString());
+                    String description = obj.get("description").toString();
+          //          String file = obj.get("file").toString();
+                    String type = obj.get("type").toString();
+                    String strType = type.substring(6, type.length() - 1);
+                    String niveau = obj.get("niveau").toString();
+                    float rating = Float.parseFloat(obj.get("rating").toString());
+                    String idStudent = obj.get("idStudent").toString();
+                    String strIdStudent = idStudent.substring(6, idStudent.length() - 1);
+
+                    promo.setId((int) id);
+                    promo.setDescription(description);
+                    promo.setRating((int) rating);
+                //    promo.setFile(file);
+                    promo.setNiveau(niveau);
+                    promo.setType(strType);
+                    promo.setId_student(strIdStudent);
+
+                    //inset data in array list result
+                    result.add(promo);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("ERROOR");
+            }
+        });
+        //  return null;
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return result;
     }
 
     public ArrayList<Co_Studying> displayCos() {
@@ -89,22 +130,22 @@ public class CoStudyingServices {
                     Co_Studying promo = new Co_Studying();
                     float id = Float.parseFloat(obj.get("id").toString());
                     String description = obj.get("description").toString();
-                    //    String file = obj.get("file").toString();
+          //          String file = obj.get("file").toString();
                     String type = obj.get("type").toString();
                     String strType = type.substring(6, type.length() - 1);
                     String niveau = obj.get("niveau").toString();
                     float rating = Float.parseFloat(obj.get("rating").toString());
                     String idStudent = obj.get("idStudent").toString();
                     String strIdStudent = idStudent.substring(6, idStudent.length() - 1);
-                    
+
                     promo.setId((int) id);
                     promo.setDescription(description);
                     promo.setRating((int) rating);
-                    //    promo.setFile(file);
+                //    promo.setFile(file);
                     promo.setNiveau(niveau);
                     promo.setType(strType);
                     promo.setId_student(strIdStudent);
-                    
+
                     //inset data in array list result
                     result.add(promo);
                 }

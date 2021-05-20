@@ -11,8 +11,13 @@ import com.codename1.components.InfiniteProgress;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
+import com.codename1.ext.filechooser.FileChooser;
+import com.codename1.io.FileSystemStorage;
+import com.codename1.io.Log;
 import com.codename1.ui.Button;
 import com.codename1.ui.ButtonGroup;
+import com.codename1.ui.CN;
+import com.codename1.ui.CheckBox;
 import com.codename1.ui.ComboBox;
 import com.codename1.ui.Component;
 import com.codename1.ui.Container;
@@ -32,7 +37,14 @@ import com.codename1.ui.plaf.Style;
 import com.codename1.ui.util.Resources;
 import com.codename1.ui.Graphics;
 import com.codename1.ui.RadioButton;
+import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.layouts.GridLayout;
+import com.codename1.ui.plaf.Border;
+import com.codename1.ui.util.ImageIO;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -42,6 +54,26 @@ import java.util.List;
 public class AddCoStudying extends BaseForm {
 
     Form current;
+
+    String path = "";
+    String imgpath = "";
+
+    protected String saveFileToDevice(String hi, String ext) throws IOException {
+        URI uri;
+        try {
+            uri = new URI(hi);
+            String path = uri.getPath();
+            int index = hi.lastIndexOf("/");
+            hi = hi.substring(index + 1);
+            imgpath = hi;
+            return hi;
+        } catch (URISyntaxException ex) {
+        }
+        int index = hi.lastIndexOf("/");
+        hi = hi.substring(index + 1);
+        imgpath = hi;
+        return hi;
+    }
 
     public AddCoStudying(Resources res) {
 
@@ -104,12 +136,18 @@ public class AddCoStudying extends BaseForm {
 
         RadioButton liste = RadioButton.createToggle("Home", barGroup);
         liste.setUIID("SelectBar");
+        liste.getAllStyles().setBorder(Border.createEmpty());
+        liste.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         RadioButton mesListes = RadioButton.createToggle("Contenu", barGroup);
         mesListes.setUIID("SelectBar");
+        mesListes.getAllStyles().setBorder(Border.createEmpty());
+        mesListes.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         RadioButton partage = RadioButton.createToggle("Ajouter", barGroup);
         partage.setUIID("SelectBar");
+        partage.getAllStyles().setBorder(Border.createEmpty());
+        partage.getAllStyles().setTextDecoration(Style.TEXT_DECORATION_UNDERLINE);
 
         Label arrow = new Label(res.getImage("news-tab-down-arrow.png"), "Container");
 
@@ -158,29 +196,91 @@ public class AddCoStudying extends BaseForm {
 //        addStringValue("Type", type);
         ComboBox c = new ComboBox();
         List<String> listType = CoStudyingServices.getInstance().getAllType();
-
         for (String t : listType) {
             c.addItem(t);
         }
         listType.removeAll(listType);
         //listType.clear();
+
         description.setUIID("TextFieldBalck");
         addStringValue("Type", c);
 
         TextField niveau = new TextField("", "Entrer un niveau");
-        description.setUIID("TextFieldBalck");
+        niveau.setUIID("TextFieldBalck");
         addStringValue("Level", niveau);
 
         TextField rating = new TextField("", "Entrer le rating");
         rating.setUIID("TextFieldBalck");
         addStringValue("Rating", rating);
 
-        TextField idStudent = new TextField("", "Entrer idStudent");
+        TextField idStudent = new TextField("", "Entrer propriétaire");
         idStudent.setUIID("TextFieldBalck");
         addStringValue("Author", idStudent);
 
-        Button btnAjouter = new Button("Add");
+        CheckBox multiSelect = new CheckBox("Multi-Select");
+        Button img1 = new Button("Choisir un fichier");
+        img1.setUIID("TextFieldBlack");
+        addStringValue("Fichier PDF", img1);
+        img1.addActionListener((ActionEvent e) -> {
+            if (FileChooser.isAvailable()) {
+                FileChooser.setOpenFilesInPlace(true);
+                FileChooser.showOpenDialog(multiSelect.isSelected(), ".pdf, .jpg, .jpeg, .png/plain", (ActionEvent e2) -> {
+                    if (e2 == null || e2.getSource() == null) {
+                        add("No file was selected");
+                        revalidate();
+                        return;
+                    }
+                    if (multiSelect.isSelected()) {
+                        String[] paths = (String[]) e2.getSource();
+                        for (String path : paths) {
+                            System.out.println(path);
+                            CN.execute(path);
+                        }
+                        return;
+                    }
 
+                    String file = (String) e2.getSource();
+                    if (file == null) {
+                        add("Aucun fichier n'a été sélectionné");
+                        revalidate();
+                    } else {
+                        img1.setEnabled(false);
+                        int index = file.lastIndexOf("/");
+                        imgpath = file.substring(index + 1);
+                        img1.setText(imgpath);
+                        String imageFile = FileSystemStorage.getInstance().getAppHomePath() + "photo.png";
+                        try (OutputStream os = FileSystemStorage.getInstance().openOutputStream(imageFile)) {
+                            System.out.println(imageFile);
+                        } catch (IOException err) {
+                        }
+
+                        String extension = null;
+                        if (file.lastIndexOf(".") > 0) {
+                            try {
+                                extension = file.substring(file.lastIndexOf(".") + 1);
+                                StringBuilder hi = new StringBuilder(file);
+                                if (file.startsWith("file://")) {
+                                    hi.delete(0, 7);
+                                }
+                                int lastIndexPeriod = hi.toString().lastIndexOf(".");
+                                Log.p(hi.toString());
+                                String ext = hi.toString().substring(lastIndexPeriod);
+                                String hmore = hi.toString().substring(0, lastIndexPeriod - 1);
+                                String namePic = saveFileToDevice(file, ext);
+                                System.out.println(namePic);
+                                path = namePic;
+                                System.out.println("File  \n\n" + file);
+                                revalidate();
+                            } catch (IOException ex) {
+
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        Button btnAjouter = new Button("Add");
         addStringValue("", btnAjouter);
         btnAjouter.addActionListener((e) -> {
 
@@ -192,6 +292,7 @@ public class AddCoStudying extends BaseForm {
                     final Dialog iDialog = ip.showInfiniteBlocking();
                     Co_Studying promo = new Co_Studying(
                             String.valueOf(description.getText()),
+                            path,
                             String.valueOf(c.getSelectedItem()),
                             String.valueOf(niveau.getText()),
                             Integer.valueOf(rating.getText()),
